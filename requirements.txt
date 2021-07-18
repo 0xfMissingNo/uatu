@@ -1,0 +1,7 @@
+tox==3.14.3
+cbpro==1.1.4
+web3==3.16.5
+tweepy==3.10.0
+ipython==7.25.0
+etherscan==0.3.0
+langdetect==1.0.9
