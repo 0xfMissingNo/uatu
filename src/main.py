@@ -61,7 +61,7 @@ class TheWatcher:
     def execute(self):
         self._is_running = True
         while self._is_running:
-            time.sleep(1)
+            time.sleep(.01)
 
     def run(self):
         self.thread = Thread(target=self._run, args=(), daemon=True)
@@ -73,5 +73,5 @@ class TheWatcher:
 
 
 class Uatu(TheWatcher):
-
-    _components = ETHTwitterBot, CoinBaseProETH, EthereumMemPool
+    # TODO: Order is delicate, can it be made more robust?
+    _components = CoinBaseProETH, EthereumMemPool, ETHTwitterBot

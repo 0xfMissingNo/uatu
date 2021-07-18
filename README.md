@@ -25,14 +25,7 @@ Uatu | initializing
                               ETHTwitter | RT 🚀Noji Swap Token Airdrops Giveaways in 4 Days, 🟣5000  $NSWT FOR 1,000 PEOPLE 😈Join Now ? 🟣Retweet this, 🟪Follow us 🟪R…
                               ETHTwitter | RT VDollar Airdrop 💧 Task Up to 50 Vdust Airdrop Link &amp Information #crypto…
 In [4]: watcher.close()
-                              ETHTwitter | RT Breaking #RELOADED looks like breaking the 20 tonight is imminent Hundreds of buys flowing in for that 9 ETH redist…
-                              ETHTwitter | i wish i had bought th is game back in the day.
-                              ETHTwitter | Smoke This Ova Dark Myster Mysterious Up now full interview
-                              ETHTwitter | RT _finance 1000 in $ETH to a random person Just Retweet and Follow me Winner announced in 4 hours Good luck!
-                              ETHTwitter | RT 100 DAYS OF 1000 YEARS Official Teaser #100DAYSOF1000YEARS FB NanaOfficial Twitter nanaoffi…
-                              ETHTwitter | RT 💧MTGOX Airdrop 💧 Listed on PancakeSwap Task Up to 100,000 MTGOX (~$5.6) 👨‍👩‍ Referral 10,000 MT…
                               ETHPriceCBPro | 1983.09
-                              ETHTwitter | RT If your holding #BNB or #ETH Like &amp Retweet 👏🏻
 
 -- Socket Closed --
 
