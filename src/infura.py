@@ -17,7 +17,6 @@ class InfuraWSS(Universe):
     __ref__ = 'https://infura.io/docs/ethereum/wss/introduction'
     uri = "wss://mainnet.infura.io/ws/v3/"
     jsonrpc = "2.0"
-    _env_name = 'WEB3_INFURA_PROJECT_ID'
 
     def _create_attr(self, hidden_attr, callback):
         if hasattr(self, hidden_attr):
