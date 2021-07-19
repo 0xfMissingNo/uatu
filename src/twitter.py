@@ -3,10 +3,10 @@ import re
 import tweepy
 from langdetect import detect, lang_detect_exception
 
-from src import Component
+from src import Universe
 
 
-class BaseListener(tweepy.StreamListener, Component):
+class BaseListener(tweepy.StreamListener, Universe):
 
     __ref__ = "http://docs.tweepy.org/en/latest/streaming_how_to.html"
     _regex = r"(@[A-Za-z0-9]+)|([^0-9A-Za-z \t]) |(\w+:\/\/\S+)"
@@ -33,7 +33,7 @@ class BaseListener(tweepy.StreamListener, Component):
         return True
 
 
-class BaseTwitterBot(Component):
+class BaseTwitterBot(Universe):
 
     __ref__ = "http://docs.tweepy.org/en/latest/"
     twitter_handles = []

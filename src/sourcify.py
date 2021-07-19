@@ -1,5 +1,3 @@
-import os
-
 import requests
 
 
@@ -11,6 +9,7 @@ class Sourcify:
         self.address = address
         self.chain_id = chain_id
         self.filename = None
+        self.source_code = self.get_source_code()
 
     def check_by_address(self):
         url = 'https://sourcify.dev/server/'
@@ -26,23 +25,10 @@ class Sourcify:
         response = requests.get(self.repo_url + f'full_match/{self.chain_id}/{self.address}/{endpoint}')
         return response
 
-    def get_source_file(self):
+    def get_source_code(self):
+        if not self.check_by_address():
+            return None
         output = self.get_metadata()
         filepath = list(output['sources'].keys())[0]
         self.filename = filepath.split('/')[-1]
-        return self._get_endpoint(f'sources/{filepath}')
-
-    def __enter__(self):
-        if not self.check_by_address():
-            return None
-        data = self.get_source_file().text
-        with open(self.filename, 'w+') as file_:
-            file_.write(data)
-        return self
-
-    def __exit__(self, *args):
-        if not hasattr(self, 'filename'):
-            return args
-        if os.path.exists(self.filename):
-            os.remove(self.filename)
-        return args
+        return self._get_endpoint(f'sources/{filepath}').text

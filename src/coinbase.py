@@ -2,10 +2,10 @@ import time
 
 import cbpro
 
-from src import Component
+from src import Universe
 
 
-class PriceTracker(cbpro.WebsocketClient, Component):
+class PriceTracker(cbpro.WebsocketClient, Universe):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,7 +18,7 @@ class PriceTracker(cbpro.WebsocketClient, Component):
         self.logger(self.price)
 
 
-class CoinBase(Component):
+class CoinBase(Universe):
 
     products = NotImplemented
     uri = "wss://ws-feed.pro.coinbase.com"

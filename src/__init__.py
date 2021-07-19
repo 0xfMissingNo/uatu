@@ -6,12 +6,12 @@ from getpass import getpass
 class Environment:
 
     def __init__(self):
-        self._components = OrderedDict()
+        self._universes = OrderedDict()
         self.secrets = Secrets()
 
     @property
-    def components(self):
-        return self._components
+    def universes(self):
+        return self._universes
 
     @staticmethod
     def logger(msg):
@@ -83,7 +83,7 @@ class Secrets:
 ENV = Environment()
 
 
-class Component:
+class Universe:
     setup_executed = False
 
     def __init__(self):
@@ -95,9 +95,9 @@ class Component:
 
     def construct_attr(self):
         for dependency in self.dependencies:
-            if dependency.__name__ not in self.component_names:
-                ENV.components[dependency.__name__] = dependency()
-            setattr(self, '_' + dependency.__name__, ENV.components[dependency.__name__])
+            if dependency.__name__ not in self.universe_names:
+                ENV.universes[dependency.__name__] = dependency()
+            setattr(self, '_' + dependency.__name__, ENV.universes[dependency.__name__])
 
     def setup(self):
         """Implemented by inherited class"""
@@ -109,8 +109,8 @@ class Component:
         """Implemented by inherited class"""
 
     @property
-    def component_names(self):
-        return [i.__class__.__name__ for i in ENV.components]
+    def universe_names(self):
+        return [i.__class__.__name__ for i in ENV.universes]
 
     def logger(self, msg):
         ENV.logger(f'{" " * 30}{self.__class__.__name__} | {msg}')

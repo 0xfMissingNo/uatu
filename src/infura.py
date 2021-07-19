@@ -8,11 +8,11 @@ from web3 import Web3
 from websocket import create_connection
 from websocket._exceptions import WebSocketConnectionClosedException
 
-from src import Component
+from src import Universe
 from src.coinbase import CoinBaseProETH
 
 
-class InfuraWSS(Component):
+class InfuraWSS(Universe):
 
     __ref__ = 'https://infura.io/docs/ethereum/wss/introduction'
     uri = "wss://mainnet.infura.io/ws/v3/"

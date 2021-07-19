@@ -8,44 +8,44 @@ from src.infura import EthereumMemPool
 from src.twitter import ETHTwitterBot
 
 
-class TheWatcher:
+class Multiverse:
 
-    _components = ()
+    _universes = ()
 
     def __init__(self):
         self._is_running = False
         self.thread = None
 
     @property
-    def components(self):
-        return ENV.components
+    def universes(self):
+        return ENV.universes
 
     def logger(self, msg):
         ENV.logger(f'{self.__class__.__name__} | {msg}')
 
     def initialize(self):
         self.logger('initializing')
-        for component in self._components:
-            if component in [i.__class__ for i in ENV.components]:
+        for universe in self._universes:
+            if universe in [i.__class__ for i in ENV.universes]:
                 continue
-            init = component()
-            self.components[init.__class__.__name__] = init
+            init = universe()
+            self.universes[init.__class__.__name__] = init
 
     def setup(self):
-        for component in self.components:
-            self.components[component].setup()
-            self.components[component].setup_executed = True
+        for universe in self.universes:
+            self.universes[universe].setup()
+            self.universes[universe].setup_executed = True
 
-    def component_run(self):
-        for component in self.components:
-            self.components[component].run()
+    def universe_run(self):
+        for universe in self.universes:
+            self.universes[universe].run()
 
     def cleanup(self):
-        for component in list(self.components)[::-1]:
+        for universe in list(self.universes)[::-1]:
             try:
-                if not self.components[component].setup_executed:
+                if not self.universes[universe].setup_executed:
                     continue
-                self.components[component].cleanup()
+                self.universes[universe].cleanup()
             except Exception:
                 pass
 
@@ -53,7 +53,7 @@ class TheWatcher:
         self.initialize()
         try:
             self.setup()
-            self.component_run()
+            self.universe_run()
             self.execute()
         finally:
             self.cleanup()
@@ -72,6 +72,6 @@ class TheWatcher:
         self.thread.join()
 
 
-class Uatu(TheWatcher):
+class Uatu(Multiverse):
     # TODO: Order is delicate, can it be made more robust?
-    _components = CoinBaseProETH, EthereumMemPool, ETHTwitterBot
+    _universes = CoinBaseProETH, EthereumMemPool, ETHTwitterBot
