@@ -7,6 +7,7 @@ from etherscan import Client
 from web3 import Web3
 from websocket import create_connection
 from websocket._exceptions import WebSocketConnectionClosedException
+
 from src import Universe
 from src.coinbase import CoinBaseProETH
 from src.sourcify import Sourcify
