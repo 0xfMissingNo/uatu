@@ -9,7 +9,7 @@ class Sourcify:
         self.address = address
         self.chain_id = chain_id
         self.filename = None
-        self.source_code = self.get_source_code()
+        self.code = self.get_source_code()
 
     def check_by_address(self):
         url = 'https://sourcify.dev/server/'
