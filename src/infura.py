@@ -188,6 +188,20 @@ class SourceCodeAnalysis(InfuraSubscription):
         return source
 
 
+class SourceifyCodeAnalysis(SourceCodeAnalysis):
+
+    def inner_callback(self, data):
+        address = data['result']['hash']
+        if not {address} - self.contract_addresses:
+            return
+        source = self.etherscan.get_contract_source_code(address)
+        if not source:
+            return
+        self.contract_addresses.add(address)
+        self.logger(source)
+        return source
+
+
 class PrintIncrementingTX(InfuraSubscription):
 
     def inner_callback(self, data):
