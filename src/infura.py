@@ -7,9 +7,16 @@ from etherscan import Client
 from web3 import Web3
 from websocket import create_connection
 from websocket._exceptions import WebSocketConnectionClosedException
-
 from src import Universe
 from src.coinbase import CoinBaseProETH
+from src.sourcify import Sourcify
+
+
+class EtherScanClient(Client):
+
+    @staticmethod
+    def get_contract_source_code(address):
+        return Sourcify(address).code
 
 
 class InfuraWSS(Universe):
@@ -157,7 +164,7 @@ class SourceCodeAnalysis(InfuraSubscription):
 
     def __init__(self):
         super().__init__()
-        self.etherscan = Client(self.secrets.etherscan_token)
+        self.etherscan = EtherScanClient(self.secrets.etherscan_token)
         self.contract_addresses = set()
 
     def inner_callback(self, data):
@@ -174,8 +181,7 @@ class SourceCodeAnalysis(InfuraSubscription):
 
         if {address} - self.contract_addresses:
             self.contract_addresses.add(address)
-            # TODO: why no-memeber
-            source = self.etherscan.get_contract_source_code(address)  # pylint:disable=no-member
+            source = self.etherscan.get_contract_source_code(address)
             self.logger(source)
 
         return source
