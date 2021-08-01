@@ -2,7 +2,7 @@ import os
 import asyncio
 from collections import OrderedDict
 from getpass import getpass
-
+from threading import Thread
 
 class Environment:
 
@@ -96,6 +96,10 @@ class Universe:
     def async_run(self):
         loops = (cb() for cb in self.async_setup())
         return asyncio.run(self.gather(*loops))
+
+    def start_thread(self):
+        self.thread = Thread(target=self.async_run)
+        self.thread.start()
 
     def __init__(self):
         self.construct_attr()

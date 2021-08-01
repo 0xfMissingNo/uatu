@@ -38,89 +38,21 @@ class BaseListener(tweepy.StreamListener, Universe):
         return True
 
 
-class AsyncStream(tweepy.Stream):
+class AsyncStream(tweepy.Stream, Universe):
 
-    def start_thread(self, is_async):
-        def _run():
-            return self.async_run(self._run)
-        if is_async:
-            self._thread = Thread(target=_run)
-            self._thread.daemon = self.daemon
-            self._thread.start()
-        else:
-            _run()
+    def async_setup(self):
+        return [self._run]
     
     def _start(self, is_async):
         """Intentionally overridden"""
 
-    async def _run(self):
-        self.running = True
-        # Authenticate
-        url = "https://%s%s" % (self.host, self.url)
-
-        # Connect and process the stream
-        error_counter = 0
-        resp = None
-        exc_info = None
-        while self.running:
-            if self.retry_count is not None:
-                if error_counter > self.retry_count:
-                    # quit if error count greater than retry count
-                    break
-            try:
-                auth = self.auth.apply_auth()
-                print('running')
-                async with aiohttp.ClientSession() as self.session:
-                    self.session.headers = self.headers
-                    self.session.params = None
-                    resp = await self.session.request('POST',
-                                                url,
-                                                data=self.body,
-                                                timeout=self.timeout,
-                                                stream=True,
-                                                auth=auth,
-                                                verify=self.verify,
-                                                proxies = self.proxies)
-                print('running')
-
-                if resp.status_code != 200:
-                    if self.listener.on_error(resp.status_code) is False:
-                        break
-                    error_counter += 1
-                    if resp.status_code == 420:
-                        self.retry_time = max(self.retry_420_start,
-                                              self.retry_time)
-                    await asyncio.sleep(self.retry_time)
-                    self.retry_time = min(self.retry_time * 2,
-                                          self.retry_time_cap)
-                else:
-                    error_counter = 0
-                    self.retry_time = self.retry_time_start
-                    self.snooze_time = self.snooze_time_step
-                    self.listener.on_connect()
-                    self._read_loop(resp)
-            except (Timeout, ssl.SSLError) as exc:
-                # This is still necessary, as a SSLError can actually be
-                # thrown when using Requests
-                # If it's not time out treat it like any other exception
-                if isinstance(exc, ssl.SSLError):
-                    if not (exc.args and 'timed out' in str(exc.args[0])):
-                        exc_info = sys.exc_info()
-                        break
-                if self.listener.on_timeout() is False:
-                    break
-                if self.running is False:
-                    break
-                await asyncio.sleep(self.snooze_time)
-                self.snooze_time = min(self.snooze_time + self.snooze_time_step,
-                                       self.snooze_time_cap)
-            except Exception as exc:
-                exc_info = sys.exc_info()
-                # any other exception is fatal, so kill loop
-                break
+    @asyncio.coroutine
+    def _run(self):
+        super()._run()
 
     async def filter(self, *args, **kwargs):
         super().filter(*args, **kwargs)
+        self.running = True
         await self._run()
 
 
