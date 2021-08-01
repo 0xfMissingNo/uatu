@@ -32,15 +32,8 @@ class PriceTracker(cbpro.WebsocketClient, Universe):
             await asyncio.sleep(interval)
 
     async def _listen(self):
-        while not self.stop:
-            try:
-                data = self.ws.recv()
-                msg = json.loads(data)
-            except Exception as e:
-                self.on_error(e)
-            else:
-                self.on_message(msg)
-            await asyncio.sleep(0)
+        super()._listen()
+        await asyncio.sleep(0)
 
     def start(self):
         loops = (cb() for cb in [self.async_start, self.keepalive])
