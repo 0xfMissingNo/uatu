@@ -1,5 +1,4 @@
 import time
-import json
 import asyncio
 import cbpro
 from threading import Thread

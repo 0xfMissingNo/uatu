@@ -1,6 +1,5 @@
 
 import time
-import itertools
 from threading import Thread
 import asyncio
 from src import ENV

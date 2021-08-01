@@ -1,5 +1,4 @@
 import json
-import asyncio
 from collections import defaultdict
 from threading import Thread
 import websocket

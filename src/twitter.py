@@ -1,11 +1,6 @@
 import re
-import sys
-from threading import Thread
 import asyncio
-import aiohttp
 import tweepy
-import ssl
-from requests.exceptions import Timeout
 from langdetect import detect, lang_detect_exception
 
 from src import Universe
