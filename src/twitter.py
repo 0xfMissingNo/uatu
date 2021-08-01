@@ -39,6 +39,7 @@ class BaseTwitterBot(Universe):
     twitter_handles = []
     symbol = None
     _listener = BaseListener
+    _stream = tweepy.Stream
 
     def __init__(self):
         super().__init__()
@@ -57,7 +58,7 @@ class BaseTwitterBot(Universe):
         self._init_stream()
 
     def _init_stream(self):
-        self.stream = tweepy.Stream(auth=self.auth, listener=self.listener())
+        self.stream = self._stream(auth=self.auth, listener=self.listener())
         self._stream_initialized = True
 
     def track(self, keywords=None, symbol=None):
