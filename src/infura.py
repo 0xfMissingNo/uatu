@@ -2,7 +2,6 @@ import json
 import asyncio
 from collections import defaultdict
 from threading import Thread
-import queue
 import websocket
 from etherscan import Client
 from web3 import Web3
@@ -199,7 +198,7 @@ class SourceCodeAnalysis(InfuraWSS):
         return source
 
 
-class SourceifyCodeAnalysis(SourceCodeAnalysis):
+class SourceifyCodeAnalysis(InfuraSubscription):
 
     def inner_callback(self, data):
         address = data['result']['hash']
@@ -235,9 +234,3 @@ class EthereumMemPool(InfuraSubscription):
             return
         tx_hash = data['result']['hash']
         self.logger(f'{tx_hash} - ${"{:.2f}".format(eth_value)}')
-
-
-class AsyncMemPool(AsyncInfuraSubscription, EthereumMemPool):
-
-    def inner_callback(self, data):
-         EthereumMemPool.inner_callback(self, data)
