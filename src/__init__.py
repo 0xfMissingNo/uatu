@@ -1,4 +1,5 @@
 import os
+import asyncio
 from collections import OrderedDict
 from getpass import getpass
 
@@ -86,6 +87,12 @@ ENV = Environment()
 class Universe:
     setup_executed = False
 
+    async def gather(self, *args):
+        await asyncio.gather(*args)
+    
+    def async_run(self, *args):
+        return asyncio.run(self.gather(*args))
+
     def __init__(self):
         self.construct_attr()
 
@@ -113,7 +120,7 @@ class Universe:
         return [i.__class__.__name__ for i in ENV.universes]
 
     def logger(self, msg):
-        ENV.logger(f'{" " * 30}{self.__class__.__name__} | {msg}')
+        return ENV.logger(f'{" " * 30}{self.__class__.__name__} | {msg}')
 
     @property
     def secrets(self):

@@ -1,7 +1,8 @@
 import json
+import asyncio
 from collections import defaultdict
 from threading import Thread
-
+import queue
 import websocket
 from etherscan import Client
 from web3 import Web3
@@ -87,6 +88,7 @@ class InfuraSubscription(InfuraWSS):
         self._max_eth_value = 0
         self._hash = None
         self.thread = None
+        self.queue = queue.Queue()
 
     @property
     def dependencies(self):
@@ -129,16 +131,24 @@ class InfuraSubscription(InfuraWSS):
         return self._subscribed[param]
 
     def subscribe(self, param):
+        return self.start_thread(param)
+    
+    def start_thread(self, param=None):
+        loops = (self.subscription(param) for _ in [1])
+        self.thread = Thread(target=self.async_run, args=loops, daemon=True)
+        self.thread.start()
+
+    async def subscription(self, param):
+
         if self.is_subscribed(param):
             return
         self._send_method("eth_subscribe", param)
         self._subscribed[param] = True
 
-        def subscription():
-            while self.is_subscribed(param):
-                self.callback()
-        self.thread = Thread(target=subscription, daemon=True)
-        self.thread.start()
+        while self.is_subscribed(param):
+             data = self.callback()
+             if data:
+                 await data
 
     def unsubscribe(self, param):
         if not self.is_subscribed(param):
@@ -151,6 +161,7 @@ class InfuraSubscription(InfuraWSS):
         for subscription in subscriptions:
             self._subscribed[subscription] = False
         self.conn.close()
+        self.eth.close()
         delattr(self, '__conn')
         self.thread.join()
 
@@ -161,7 +172,7 @@ class InfuraSubscription(InfuraWSS):
         return self.close()
 
 
-class SourceCodeAnalysis(InfuraSubscription):
+class SourceCodeAnalysis(InfuraWSS):
 
     def __init__(self):
         super().__init__()
@@ -224,3 +235,9 @@ class EthereumMemPool(InfuraSubscription):
             return
         tx_hash = data['result']['hash']
         self.logger(f'{tx_hash} - ${"{:.2f}".format(eth_value)}')
+
+
+class AsyncMemPool(AsyncInfuraSubscription, EthereumMemPool):
+
+    def inner_callback(self, data):
+         EthereumMemPool.inner_callback(self, data)
