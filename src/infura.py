@@ -87,7 +87,6 @@ class InfuraSubscription(InfuraWSS):
         self._max_eth_value = 0
         self._hash = None
         self.thread = None
-        self.queue = queue.Queue()
 
     @property
     def dependencies(self):
