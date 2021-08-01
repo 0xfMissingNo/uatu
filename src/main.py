@@ -1,7 +1,8 @@
 
 import time
+import itertools
 from threading import Thread
-
+import asyncio
 from src import ENV
 from src.coinbase import CoinBaseProETH
 from src.infura import EthereumMemPool
@@ -11,6 +12,12 @@ from src.twitter import ETHTwitterBot
 class Multiverse:
 
     _universes = ()
+
+    async def gather(self, *args):
+        await asyncio.gather(*args)
+    
+    def async_run(self, *args):
+        return asyncio.run(self.gather(*args))
 
     def __init__(self):
         self._is_running = False
@@ -35,6 +42,13 @@ class Multiverse:
         for universe in self.universes:
             self.universes[universe].setup()
             self.universes[universe].setup_executed = True
+
+    def async_setup(self):
+        methods = []
+        for universe in self.universes:
+            methods += self.universes[universe].async_setup()
+        self.async_run(*(cb() for cb in methods))
+
 
     def universe_run(self):
         for universe in self.universes:
@@ -72,6 +86,11 @@ class Multiverse:
         self.thread.join()
 
 
-class Uatu(Multiverse):
-    # TODO: Order is delicate, can it be made more robust?
-    _universes = CoinBaseProETH, EthereumMemPool, ETHTwitterBot
+class AsyncMultiverse(Multiverse):
+
+    def setup(self):
+        return self.async_setup()
+
+
+class Uatu(AsyncMultiverse):
+    _universes = ETHTwitterBot, CoinBaseProETH

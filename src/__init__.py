@@ -87,11 +87,15 @@ ENV = Environment()
 class Universe:
     setup_executed = False
 
+    def async_setup(self):
+        return []
+
     async def gather(self, *args):
         await asyncio.gather(*args)
     
-    def async_run(self, *args):
-        return asyncio.run(self.gather(*args))
+    def async_run(self):
+        loops = (cb() for cb in self.async_setup())
+        return asyncio.run(self.gather(*loops))
 
     def __init__(self):
         self.construct_attr()

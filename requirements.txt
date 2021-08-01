@@ -5,3 +5,4 @@ tweepy==3.10.0
 ipython==7.25.0
 etherscan==0.3.0
 langdetect==1.0.9
+ipdb==0.13.9
