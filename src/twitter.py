@@ -1,6 +1,5 @@
 import re
-from threading import Thread
-import asyncio
+
 import tweepy
 from langdetect import detect, lang_detect_exception
 
@@ -11,21 +10,6 @@ class BaseListener(tweepy.StreamListener, Universe):
 
     __ref__ = "http://docs.tweepy.org/en/latest/streaming_how_to.html"
     _regex = r"(@[A-Za-z0-9]+)|([^0-9A-Za-z \t]) |(\w+:\/\/\S+)"
-
-    def _start(self, is_async):
-        self.running = True
-        def _run():
-            return self.async_run(self._run)
-        if is_async:
-            self._thread = Thread(target=_run)
-            self._thread.daemon = self.daemon
-            self._thread.start()
-        else:
-            _run()
-
-    async def _run(self):
-        super()._run()
-        await asyncio.sleep(0)
 
     @staticmethod
     def is_english(text):

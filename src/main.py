@@ -4,7 +4,7 @@ from threading import Thread
 
 from src import ENV
 from src.coinbase import CoinBaseProETH
-from src.infura import EthereumMemPool
+from src.infura import SourceifyCodeAnalysis
 from src.twitter import ETHTwitterBot
 
 
@@ -74,4 +74,4 @@ class Multiverse:
 
 class Uatu(Multiverse):
     # TODO: Order is delicate, can it be made more robust?
-    _universes = CoinBaseProETH, EthereumMemPool, ETHTwitterBot
+    _universes = CoinBaseProETH, SourceifyCodeAnalysis, ETHTwitterBot

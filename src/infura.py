@@ -1,7 +1,7 @@
 import json
-import asyncio
 from collections import defaultdict
 from threading import Thread
+
 import websocket
 from etherscan import Client
 from web3 import Web3
@@ -129,24 +129,16 @@ class InfuraSubscription(InfuraWSS):
         return self._subscribed[param]
 
     def subscribe(self, param):
-        return self.start_thread(param)
-    
-    def start_thread(self, param=None):
-        loops = (self.subscription(param) for _ in [1])
-        self.thread = Thread(target=self.async_run, args=loops, daemon=True)
-        self.thread.start()
-
-    async def subscription(self, param):
-
         if self.is_subscribed(param):
             return
         self._send_method("eth_subscribe", param)
         self._subscribed[param] = True
 
-        while self.is_subscribed(param):
-             data = self.callback()
-             if data:
-                 await data
+        def subscription():
+            while self.is_subscribed(param):
+                self.callback()
+        self.thread = Thread(target=subscription, daemon=True)
+        self.thread.start()
 
     def unsubscribe(self, param):
         if not self.is_subscribed(param):
@@ -159,7 +151,6 @@ class InfuraSubscription(InfuraWSS):
         for subscription in subscriptions:
             self._subscribed[subscription] = False
         self.conn.close()
-        self.eth.close()
         delattr(self, '__conn')
         self.thread.join()
 
@@ -170,7 +161,7 @@ class InfuraSubscription(InfuraWSS):
         return self.close()
 
 
-class SourceCodeAnalysis(InfuraWSS):
+class SourceCodeAnalysis(InfuraSubscription):
 
     def __init__(self):
         super().__init__()
@@ -197,7 +188,7 @@ class SourceCodeAnalysis(InfuraWSS):
         return source
 
 
-class SourceifyCodeAnalysis(InfuraSubscription):
+class SourceifyCodeAnalysis(SourceCodeAnalysis):
 
     def inner_callback(self, data):
         address = data['result']['hash']
