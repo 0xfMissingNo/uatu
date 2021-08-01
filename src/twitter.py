@@ -14,14 +14,14 @@ class BaseListener(tweepy.StreamListener, Universe):
 
     def _start(self, is_async):
         self.running = True
+        def _run():
+            return self.async_run(self._run)
         if is_async:
-            def _run():
-                return self.async_run(self._run)
             self._thread = Thread(target=_run)
             self._thread.daemon = self.daemon
             self._thread.start()
         else:
-            self._run()
+            _run()
 
     async def _run(self):
         super()._run()
