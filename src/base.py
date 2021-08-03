@@ -21,6 +21,13 @@ class AsyncManager:
         self.running = False
         self.thread = None
 
+    def __enter__(self):
+        self.start()
+        return self
+    
+    def __exit__(self, *args):
+        self.stop()
+
     @property
     def async_methods(self):
         return []
