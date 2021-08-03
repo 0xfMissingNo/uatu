@@ -130,13 +130,9 @@ class InfuraSubscription(InfuraWSS):
     def subscribe(self, param):
         return self.start_thread(param)
     
-    def async_setup(self):
+    @property
+    def async_methods(self):
         return [self.subscription]
-
-    def start_thread(self, param=None):
-        loops = (self.subscription(param) for _ in [1])
-        self.thread = Thread(target=self.async_run, args=loops, daemon=True)
-        self.thread.start()
 
     async def subscription(self, param='newPendingTransactions'):
 

@@ -18,7 +18,8 @@ class PriceTracker(cbpro.WebsocketClient, Universe):
         self.price = float(msg['price'])
         self.logger(self.price)
 
-    def async_setup(self):
+    @property
+    def async_methods(self):
         return [self.async_start, self.keepalive]
 
     async def async_start(self):
@@ -36,11 +37,6 @@ class PriceTracker(cbpro.WebsocketClient, Universe):
     async def _listen(self):
         super()._listen()
         await asyncio.sleep(10)
-
-    def start(self):
-        loops = (cb() for cb in [self.async_start, self.keepalive])
-        self.thread = Thread(target=self.async_run, args=loops, daemon=True)
-        self.thread.start()
 
 
 class CoinBase(Universe):
