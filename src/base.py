@@ -101,7 +101,7 @@ class CrossClassAsyncManager(AsyncManager):
         super().start(*args)
     
     def stop(self):
-        for class_ in self.classes:
+        for class_ in self.classes[::-1]:
             class_.stop()
         super().stop()
 
