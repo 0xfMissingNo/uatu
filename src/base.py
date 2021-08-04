@@ -58,7 +58,8 @@ class AsyncManager:
             self.thread.join()
             self.thread = None
             return
-        self.connected = False    
+        self.connected = False
+        self.thread = None
 
     def pause(self):
         self.running = False
